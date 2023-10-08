@@ -3,13 +3,12 @@ using UnityEngine.UI;
 
 public class Menu : MonoBehaviour
 {
-    [SerializeField] private Player player;
     [SerializeField] private GameObject pauseMenu;
 
     private void Start()
     {
         //Application.targetFrameRate = 60;
-        if (pauseMenu.activeSelf) Resume();
+        if (pauseMenu.activeSelf) Resume(); 
     }
 
     private void Update()
@@ -24,22 +23,23 @@ public class Menu : MonoBehaviour
     public void Pause()
     {
         pauseMenu.SetActive(true);
-        player.Pause();
-        CursorController.Unlock();
+        Global.IsPause = true;
+        if (Global.Mode == Mode.Photo) CursorController.Unlock();
         Time.timeScale = 0f;
     }
 
     public void Resume()
     {
-        player.Resume();
         pauseMenu.SetActive(false);
-        CursorController.Lock();
+        Global.IsPause = false;
+
+        if (Global.Mode == Mode.Photo) CursorController.Lock();
         Time.timeScale = 1f;
     }
 
     public void ChangeMouseSens(Slider slider)
     {
-        Global.mouseSens = slider.value;
+        Global.MouseSens = slider.value;
     }
 
     public void Exit()

@@ -9,13 +9,13 @@ public class PlayerController : MonoBehaviour
 
     private void LateUpdate()
     {
-        var correction = Global.mouseSens * Time.deltaTime;
+        if (Global.IsPause) return;
+
+        var correction = Global.MouseSens * Time.deltaTime;
 
         rotateDir.x = Input.GetAxis("Mouse X") * correction;
         rotateDir.y = -Input.GetAxis("Mouse Y") * correction;
 
         player.RotateView(rotateDir);
-
-        Input.GetAxis("Mouse X");
     }
 }
