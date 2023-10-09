@@ -16,11 +16,12 @@ public class MainMenu : MonoBehaviour
         newTripMenu.SetActive(false);
         shopMenu.SetActive(false);
         equipmentMenu.SetActive(false);
-        albumMenu.SetActive(false);    }
+        albumMenu.SetActive(false);    
+        }
 
     public void SceneTrancision()
     {
-        //SceneManager.LoadScene("NewTrip");
+        SceneManager.LoadScene("Map");
     }
 
 

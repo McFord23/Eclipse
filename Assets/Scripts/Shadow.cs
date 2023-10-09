@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Shadow : MonoBehaviour
 {
@@ -18,16 +19,8 @@ public class Shadow : MonoBehaviour
 
     private void OnMouseDown()
     {
-        switch (type)
-        {
-            case Type.Half:
-                print("Half");
-                break;
-
-            case Type.Full:
-                print("Full");
-                break;
-        }
+        Global.Mode = Mode.Photo;
+        SceneManager.LoadScene("Photo");
     }
 
     public void Move(Vector3 distance)
