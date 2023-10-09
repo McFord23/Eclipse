@@ -3,8 +3,6 @@ using UnityEngine.Rendering.PostProcessing;
 
 public class Photographer : MonoBehaviour
 {
-    [SerializeField] Player player;
-
     [SerializeField] PostProcessVolume postProcessVolume;
     private DepthOfField depthOfField;
     private float cameraRatio;
@@ -22,7 +20,7 @@ public class Photographer : MonoBehaviour
 
     private void Update()
     {
-        if (player.state == Player.State.Pause) return;
+        if (Global.IsPause) return;
 
         var input = Input.GetAxis("Mouse ScrollWheel");
 
