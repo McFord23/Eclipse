@@ -2,27 +2,49 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private GameObject view;
-    private Vector3 inputDir;
+    [SerializeField] private Transform moon;
+    
+    private Photographer photographer;
+    private Viewer viewer;
 
-    public Mode mode { get; private set; }
-
+    private Vector3 viewerPos;
+    private Quaternion viewerRot;
+    
     private void Start()
     {
-        inputDir = new Vector3(transform.localEulerAngles.y, 0f, 0f);
+        photographer = GetComponent<Photographer>();
+        viewer = GetComponent<Viewer>();
+        
+        photographer.enabled = false;
+        viewer.enabled = true;
+
+        Global.Mode = Mode.Map;
     }
 
-    public void RotateView(Vector3 viewDir)
+    public void MakePhoto(float eclipseQuality, Vector3 place)
     {
-        inputDir.x += viewDir.x;
+        viewerPos = transform.position;
+        viewerRot = transform.rotation;
 
-        var newDir = inputDir.y + viewDir.y;
-        if (newDir > -70 && newDir < 80)
-        {
-            inputDir = new Vector3(inputDir.x, newDir, 0);
-        }
+        transform.position = place;
+        transform.LookAt(moon);
+            
+        viewer.enabled = false;
+        photographer.enabled = true;
+        
+        CursorController.Lock();
+        Global.Mode = Mode.Photo;
+    }
 
-        transform.localEulerAngles = new Vector3(0f, inputDir.x, 0f);
-        view.transform.localEulerAngles = new Vector3(inputDir.y, 0f, 0f);
+    public void ReturnToMap()
+    {
+        transform.position = viewerPos;
+        transform.rotation = viewerRot;
+                
+        photographer.enabled = false;
+        viewer.enabled = true;
+
+        CursorController.Unlock();
+        Global.Mode = Mode.Map;
     }
 }

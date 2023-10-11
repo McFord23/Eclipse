@@ -3,26 +3,33 @@ using UnityEngine;
 
 public class Eclipse : MonoBehaviour
 {
-    public Transform target;
-    private Rigidbody rb;
+    private const float ECLIPSE_MAX_RADIUS = 6f;
 
-    [SerializeField] private Shadow shadowFull;
-    [SerializeField] private Shadow shadowHalf;
+    [SerializeField] private List<GameObject> triggers;
 
-    void Start()
+    [SerializeField] private Transform sun;
+    [SerializeField] private Transform moon;
+
+    private void FixedUpdate()
     {
-        rb = GetComponent<Rigidbody>();
+        var direction = (moon.position - sun.position).normalized;
+        transform.forward = direction;
     }
 
-    void FixedUpdate()
+    public void SetActiveTriggers(bool value)
     {
-        Vector3 distance;
-        Vector3 oldPos = rb.position;
+        foreach (var trigger in triggers)
+        {
+            trigger.SetActive(value);
+        }
+    }
+    
+    public float GetQuality(Vector3 _playerPos)
+    {
+        var playerPos = new Vector2(_playerPos.x, _playerPos.y);
+        var eclipsePos = new Vector2(transform.position.x, transform.position.y);
+        var distance = Vector2.Distance(playerPos, eclipsePos);
 
-        rb.MovePosition(target.position);
-        distance = rb.position - oldPos;
-
-        shadowFull.Move(distance);
-        shadowHalf.Move(distance);
+        return ECLIPSE_MAX_RADIUS / distance;
     }
 }

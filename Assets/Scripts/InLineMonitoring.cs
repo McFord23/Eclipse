@@ -2,32 +2,24 @@ using UnityEngine;
 
 public class InLineMonitoring : MonoBehaviour
 {
-    [SerializeField] private GameObject eclipsePrefab;
-    private GameObject eclipse;
-
-    [SerializeField] private Transform target;
-
-    [SerializeField] private Transform from;
-    [SerializeField] private Transform to;
+    [SerializeField] private Transform sun;
+    [SerializeField] private Transform moon;
+    [SerializeField] private Transform earth;
+    private bool isInLine;
     
     [SerializeField] private float maxDistance;
     [SerializeField] private LayerMask checkLayer;
 
-    private bool isInLine;
+    [SerializeField] private GameObject eclipse;
 
     private void FixedUpdate()
     {
-        CheckInLine();
-    }
-
-    private void CheckInLine()
-    {
         RaycastHit hit;
-        Vector3 direction = (to.position - from.position).normalized;
+        Vector3 direction = (earth.position - sun.position).normalized;
 
-        if (Physics.Raycast(from.position, direction, out hit, maxDistance, checkLayer))
+        if (Physics.Raycast(sun.position, direction, out hit, maxDistance, checkLayer))
         {
-            if (!isInLine && hit.transform.name == target.name)
+            if (!isInLine && hit.transform.name == moon.name)
             {
                 EclipseBegin();
             }
@@ -37,17 +29,16 @@ public class InLineMonitoring : MonoBehaviour
             if (isInLine) EclipseEnd();
         }
     }
-
+    
     private void EclipseBegin()
     {
         isInLine = true;
-        eclipse = Instantiate(eclipsePrefab, eclipsePrefab.transform.position, eclipsePrefab.transform.rotation);
-        eclipse.GetComponent<Eclipse>().target = target;
+        eclipse.SetActive(true);
     }
 
     private void EclipseEnd()
     {
         isInLine = false;
-        Destroy(eclipse);
+        eclipse.SetActive(false);
     }
 }

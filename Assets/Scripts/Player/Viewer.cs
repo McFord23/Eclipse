@@ -7,13 +7,13 @@ public class Viewer : MonoBehaviour
     private void Update()
     {
         if (Global.IsPause) return;
+        if (!Input.GetKey(KeyCode.Mouse1)) return;
 
-        if (Input.GetKey(KeyCode.Mouse1))
-        {
-            var correction = Global.MouseSens * Time.deltaTime / Time.timeScale;
-            transform.RotateAround(target.position, transform.up, 3f * Input.GetAxis("Mouse X") * correction);
-            transform.RotateAround(target.position, transform.right, 3f * -Input.GetAxis("Mouse Y") * correction);
-            transform.RotateAround(target.position, transform.forward, 3000f * Input.GetAxis("Mouse ScrollWheel") * correction);
-        }
+        var mouseCorrection = 3f * Global.MouseSens * Time.deltaTime / Time.timeScale;
+        var scrollCorrection = 3000f * Global.ScrollSens * Time.deltaTime / Time.timeScale;
+            
+        transform.RotateAround(target.position, transform.up, Input.GetAxis("Mouse X") * mouseCorrection);
+        transform.RotateAround(target.position, transform.right, -Input.GetAxis("Mouse Y") * mouseCorrection);
+        transform.RotateAround(target.position, transform.forward, Input.GetAxis("Mouse ScrollWheel") * scrollCorrection);
     }
 }

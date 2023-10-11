@@ -3,7 +3,10 @@ using UnityEngine.Rendering.PostProcessing;
 
 public class Photographer : MonoBehaviour
 {
-    [SerializeField] PostProcessVolume postProcessVolume;
+    [SerializeField] private Transform view;
+    private Vector3 inputDir;
+    
+    [SerializeField] private PostProcessVolume postProcessVolume;
     private DepthOfField depthOfField;
     private float cameraRatio;
 
@@ -15,6 +18,8 @@ public class Photographer : MonoBehaviour
 
     private void Start()
     {
+        inputDir = transform.localEulerAngles;
+        
         postProcessVolume.profile.TryGetSettings(out depthOfField);
     }
 
@@ -22,25 +27,58 @@ public class Photographer : MonoBehaviour
     {
         if (Global.IsPause) return;
 
-        var input = Input.GetAxis("Mouse ScrollWheel");
+        var correction = 200f * Global.MouseSens * Time.deltaTime;
+        var input = Input.GetAxis("Mouse ScrollWheel") * correction;
 
         if (input != 0) SetupCamera(input);
     }
+    
+    private void LateUpdate()
+    {
+        if (Global.IsPause) return;
 
-    public void SetupCamera(float input)
+        var correction = Global.MouseSens * Time.deltaTime;
+
+        var rotateDir = new Vector3
+        {
+            x = -Input.GetAxis("Mouse X") * correction,
+            y = -Input.GetAxis("Mouse Y") * correction
+        };
+
+        RotateView(rotateDir);
+    }
+    
+    private void RotateView(Vector3 viewDir)
+    {
+        inputDir.x += viewDir.x;
+        inputDir.y += viewDir.y;
+
+        /*var newDir = inputDir.y + viewDir.y;
+        if (newDir > -70 && newDir < 80)
+        {
+            inputDir = new Vector3(inputDir.x, newDir, 0);
+        }*/
+
+        transform.localEulerAngles = new Vector3(0, 0, inputDir.x);
+        view.localEulerAngles = new Vector3(inputDir.y, 0, 0);
+    }
+
+    private void SetupCamera(float input)
     {
         var newCameraRatio = cameraRatio + input;
         
-        if (newCameraRatio > -1 && newCameraRatio < 1) cameraRatio += input;
+        if (newCameraRatio is > -1 and < 1) cameraRatio += input;
         else return;
 
-        if (cameraRatio < 0)
+        switch (cameraRatio)
         {
-            depthOfField.aperture.value = MAX_APERTURE + cameraRatio * (MAX_APERTURE - MIN_APERTURE);
-        }
-        else if (cameraRatio > 0)
-        {
-            depthOfField.focalLength.value = MIN_FOCAL_LENGTH + cameraRatio * (MAX_FOCAL_LENGTH - MIN_FOCAL_LENGTH);
+            case < 0:
+                depthOfField.aperture.value = MAX_APERTURE + cameraRatio * (MAX_APERTURE - MIN_APERTURE);
+                break;
+            
+            case > 0:
+                depthOfField.focalLength.value = MIN_FOCAL_LENGTH + cameraRatio * (MAX_FOCAL_LENGTH - MIN_FOCAL_LENGTH);
+                break;
         }
     }
 
