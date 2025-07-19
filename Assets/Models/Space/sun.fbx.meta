@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1d324a3e97c7b794791b1d7d961d8035
+guid: 651d4d95acc7dc645961e88c99a147ac
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
@@ -7,13 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Shadow
-    second: {fileID: 2100000, guid: 90e32b48284d77340875b8b837512365, type: 2}
+      name: Material
+    second: {fileID: 2100000, guid: ecd99255d74244b49a95fe9aeff0685e, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Shadow Half
-    second: {fileID: 2100000, guid: 2095756bed3f8de4e98ea232ec373798, type: 2}
+      name: Sun
+    second: {fileID: 2100000, guid: ecd99255d74244b49a95fe9aeff0685e, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -76,7 +76,7 @@ ModelImporter:
     secondaryUVMinLightmapResolution: 40
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
-    useFileScale: 1
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0

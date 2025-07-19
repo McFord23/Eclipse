@@ -9,19 +9,21 @@ public class EclipseChecker : MonoBehaviour
     {
         eclipseMap.eclipse.SetActiveTriggers(true);
         StartCoroutine(WaitingCollision());
+        
+        OnTriggerEnter(null);
     }
     
     private void OnTriggerEnter(Collider other)
     {
         var quality = eclipseMap.eclipse.GetQuality(transform.position);
-        eclipseMap.eclipse.gameObject.SetActive(false);
+        //eclipseMap.eclipse.gameObject.SetActive(false);
         eclipseMap.OnCheckInEclipse(quality);
         Delete();
     }
 
     private void Delete()
     {
-        eclipseMap.eclipse.SetActiveTriggers(false);
+        //eclipseMap.eclipse.SetActiveTriggers(false);
         Destroy(gameObject);
     }
 

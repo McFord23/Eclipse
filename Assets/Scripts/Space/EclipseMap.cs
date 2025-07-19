@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class EclipseMap : MonoBehaviour
 {
-    [SerializeField] private LayerMask layer;
-    private const float MAX_DISTANCE = 25;
-    
-    [SerializeField] private GameObject eclipseCheckerPrefab;
     public Eclipse eclipse;
-
+    [SerializeField] private GameObject eclipseCheckerPrefab;
+    
+    [SerializeField] private LayerMask layer;
+    private const float MAX_DISTANCE = 50;
+    
     [Space(15)]
     [SerializeField] private Player player;
     private Vector3 potentialPhotoPlace;

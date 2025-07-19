@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ffe93964b2b35584693b5cb096359c14
+guid: af90cb19cf5258e44b0b40fa142245c2
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
@@ -7,8 +7,28 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: moon
-    second: {fileID: 2100000, guid: c70efb58c81ddff40890e9a467470aeb, type: 2}
+      name: Black
+    second: {fileID: 2100000, guid: 5008c4b2516f19948b9d6836434cd28d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Body
+    second: {fileID: 2100000, guid: 283e78429488d794e9c603238c9955d8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Glass
+    second: {fileID: 2100000, guid: 1073e99321d82754fb43b3690332715b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Metall
+    second: {fileID: 2100000, guid: d72bde0e72de0cd4a87bb497e8e28bb0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Taillight
+    second: {fileID: 2100000, guid: b04827b17afceef44af6911d421cd30b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -71,7 +91,7 @@ ModelImporter:
     secondaryUVMinLightmapResolution: 40
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
-    useFileScale: 1
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0

@@ -3,6 +3,8 @@ using UnityEngine.Rendering.PostProcessing;
 
 public class Photographer : MonoBehaviour
 {
+    [SerializeField] private Transform earth;
+    
     [SerializeField] private Transform view;
     private Vector3 inputDir;
     
@@ -18,30 +20,38 @@ public class Photographer : MonoBehaviour
 
     private void Start()
     {
-        inputDir = transform.localEulerAngles;
+        inputDir = new (transform.localEulerAngles.y, 0, 0);
         
         postProcessVolume.profile.TryGetSettings(out depthOfField);
     }
 
     private void Update()
     {
-        if (Global.IsPause) return;
+        if (Global.IsPlayerBlocked || Global.IsPause) return;
 
         var correction = 200f * Global.MouseSens * Time.deltaTime;
         var input = Input.GetAxis("Mouse ScrollWheel") * correction;
 
         if (input != 0) SetupCamera(input);
     }
-    
+
+    private void FixedUpdate()
+    {
+        if (Global.IsPlayerBlocked || Global.IsPause) return;
+        
+        Quaternion rotation = Quaternion.FromToRotation(-transform.up, earth.position - transform.position);
+        transform.rotation *= rotation;
+    }
+
     private void LateUpdate()
     {
-        if (Global.IsPause) return;
+        if (Global.IsPlayerBlocked || Global.IsPause) return;
 
         var correction = Global.MouseSens * Time.deltaTime;
 
         var rotateDir = new Vector3
         {
-            x = -Input.GetAxis("Mouse X") * correction,
+            x = Input.GetAxis("Mouse X") * correction,
             y = -Input.GetAxis("Mouse Y") * correction
         };
 
@@ -50,17 +60,18 @@ public class Photographer : MonoBehaviour
     
     private void RotateView(Vector3 viewDir)
     {
+        //inputDir = new Vector3(transform.localEulerAngles.y, 0, transform.localEulerAngles.x);
         inputDir.x += viewDir.x;
         inputDir.y += viewDir.y;
+        
+        transform.localEulerAngles = new Vector3(inputDir.y, inputDir.x, 0);
+        //view.localEulerAngles = new Vector3(inputDir.y, 0, 0);
 
         /*var newDir = inputDir.y + viewDir.y;
         if (newDir > -70 && newDir < 80)
         {
             inputDir = new Vector3(inputDir.x, newDir, 0);
         }*/
-
-        transform.localEulerAngles = new Vector3(0, 0, inputDir.x);
-        view.localEulerAngles = new Vector3(inputDir.y, 0, 0);
     }
 
     private void SetupCamera(float input)
