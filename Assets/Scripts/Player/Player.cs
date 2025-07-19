@@ -32,7 +32,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void MakePhoto(float eclipseQuality, Vector3 place)
+    public void EnablePhotoMode(float eclipseQuality, Vector3 place)
     {
         viewerPos = transform.position;
         viewerRot = transform.rotation;

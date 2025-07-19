@@ -1,5 +1,7 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.UI;
 
 public class Photographer : MonoBehaviour
 {
@@ -7,6 +9,8 @@ public class Photographer : MonoBehaviour
     
     [SerializeField] private Transform view;
     private Vector3 inputDir;
+
+    [SerializeField] private GameObject hud;
     
     [SerializeField] private PostProcessVolume postProcessVolume;
     private DepthOfField depthOfField;
@@ -18,21 +22,44 @@ public class Photographer : MonoBehaviour
     private const float MIN_FOCAL_LENGTH = 50;
     private const float MAX_FOCAL_LENGTH = 300;
 
+    [Header("Photo Taker")]
+    [SerializeField] private Image photoDisplayArea;
+    [SerializeField] private GameObject photoFrame;
+    [SerializeField] private AudioSource photoSound;
+
+    [Header("FlashEffect")]
+    [SerializeField] private Animator cameraFlash;
+
+    [Header("Photo Fader Effect")]
+    [SerializeField] private Animator fade;
+
+    private Texture2D screenCapture;
+    private bool viewingPhoto;
+
     private void Start()
     {
         inputDir = new (transform.localEulerAngles.y, 0, 0);
         
         postProcessVolume.profile.TryGetSettings(out depthOfField);
+        screenCapture = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
     }
 
     private void Update()
     {
         if (Global.IsPlayerBlocked || Global.IsPause) return;
 
-        var correction = 200f * Global.MouseSens * Time.deltaTime;
-        var input = Input.GetAxis("Mouse ScrollWheel") * correction;
+        if (!viewingPhoto)
+        {
+            var correction = 200f * Global.MouseSens * Time.deltaTime;
+            var input = Input.GetAxis("Mouse ScrollWheel") * correction;
+            if (input != 0) SetupCamera(input);
+        }
 
-        if (input != 0) SetupCamera(input);
+        if (Input.GetKeyDown(KeyCode.Mouse0) && Global.Mode is Mode.Photo)
+        {
+            if (viewingPhoto) RemovePhoto();
+            else StartCoroutine(CapturePhoto());
+        }
     }
 
     private void FixedUpdate()
@@ -93,6 +120,45 @@ public class Photographer : MonoBehaviour
         }
     }
 
+    private IEnumerator CapturePhoto()
+    {
+        hud.SetActive(false);
+        viewingPhoto = true;
+
+        yield return new WaitForEndOfFrame();
+
+        var regionToRead = new Rect(0, 0, Screen.width, Screen.height);
+        screenCapture.ReadPixels(regionToRead, 0, 0, false);
+        screenCapture.Apply();
+        ShowPhoto();
+        
+        photoSound.Play();
+    }
+
+    private void ShowPhoto()
+    {
+        var photoSprite = Sprite.Create
+        (
+            screenCapture, 
+            new Rect(0f, 0f, screenCapture.width, screenCapture.height), 
+            new Vector2(0.5f, 0.5f), 
+            100f
+        );
+
+        photoDisplayArea.sprite = photoSprite;
+        
+        photoFrame.SetActive(true);
+        cameraFlash.Play("Flash");
+        fade.Play("Fade");
+    }
+    
+    private void RemovePhoto()
+    {
+        viewingPhoto = false;
+        photoFrame.SetActive(false);
+        hud.SetActive(true);
+    }
+    
     private void OnGUI()
     {
         GUILayout.Label("scroll wheel input: " + Input.GetAxis("Mouse ScrollWheel"));

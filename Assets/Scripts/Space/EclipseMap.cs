@@ -33,6 +33,6 @@ public class EclipseMap : MonoBehaviour
 
     public void OnCheckInEclipse(float quality)
     {
-        player.MakePhoto(quality, potentialPhotoPlace);
+        player.EnablePhotoMode(quality, potentialPhotoPlace);
     }
 }
