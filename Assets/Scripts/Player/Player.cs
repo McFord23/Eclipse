@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -26,37 +25,19 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.Mouse1) && Global.Mode is Mode.Photo && !Global.IsPause)
+        if (Control.RightPress && Global.Mode is Mode.Photo && !Global.IsPause)
         {
             ReturnToMap();
         }
     }
 
-    public void EnablePhotoMode(float eclipseQuality, Vector3 place)
+    public void EnablePhotoMode(Transform targetPoint)
     {
         viewerPos = transform.position;
         viewerRot = transform.rotation;
 
-        posTransition = PosTransition(place);
+        posTransition = PosTransition(targetPoint);
         StartCoroutine(posTransition);
-
-        /*var tempObject = new GameObject();
-        var tempTransform = tempObject.transform;
-        tempTransform.position = transform.position;
-        tempTransform.rotation = transform.rotation;
-        tempTransform.LookAt(moon);
-        var rotation = tempTransform.rotation;
-        Destroy(tempObject);
-        
-        rotTransition = RotTransition(rotation);
-        StartCoroutine(rotTransition);*/
-
-        //transform.LookAt(moon, Vector3.back);
-        //transform.rotation *= Quaternion.FromToRotation(Vector3.left, Vector3.forward);
-
-        //Vector3 relativePos =  moon.position - transform.position;
-        //Quaternion rotation = Quaternion.LookRotation(relativePos, new Vector3(0,1,0));
-        //transform.rotation = rotation*Quaternion.Euler(0,90,0);
         
         viewer.enabled = false;
         photographer.enabled = true;
@@ -77,17 +58,19 @@ public class Player : MonoBehaviour
         Global.SetMode(Mode.Map);
     }
 
-    private IEnumerator PosTransition(Vector3 pos)
+    private IEnumerator PosTransition(Transform target)
     {
-        var speed = 10f * Time.deltaTime;
+        float speed = 0;
+        var startPos = transform.position;
         
-        while (Vector3.Distance(transform.position, pos) > 0.01f)
+        while (Vector3.Distance(transform.position, target.position) > 0.01f)
         {
-            transform.position = Vector3.Lerp(transform.position, pos, speed);
+            speed += Time.deltaTime;
+            transform.position = Vector3.Lerp(startPos, target.position, speed);
             yield return null;
         }
 
-        transform.position = pos;
+        transform.position = target.position;
         posTransition = null;
         UpdateBlock();
         
@@ -96,11 +79,13 @@ public class Player : MonoBehaviour
     
     private IEnumerator RotTransition(Quaternion rot)
     {
-        var speed = 30 * Time.deltaTime;
+        float speed = 0;
+        var startRot = transform.rotation;
 
         while (Quaternion.Angle(transform.rotation, rot) > 1f)
         {
-            transform.rotation = Quaternion.Lerp(transform.rotation, rot, speed);
+            speed += Time.deltaTime;
+            transform.rotation = Quaternion.Lerp(startRot, rot, speed);
             
             print("Current: " + transform.rotation);
             print("Target: " + rot);
@@ -122,5 +107,11 @@ public class Player : MonoBehaviour
         var posBlock = (posTransition != null);
         var rotBlock = (rotTransition != null);
         Global.IsPlayerBlocked = posBlock && rotBlock;
+    }
+    
+    private void OnGUI()
+    {
+        GUILayout.Label("pos transition: " + (posTransition != null));
+        GUILayout.Label("rot transition: " + (rotTransition != null));
     }
 }

@@ -36,29 +36,29 @@ public class Viewer : MonoBehaviour
     {
         if (Global.IsPlayerBlocked || Global.IsPause) return; 
         
-        if (Input.GetKey(KeyCode.Mouse1))
+        if (Control.RightHold)
         {
             RotateCameraAround();
         }
-        else if (Input.GetAxis("Mouse ScrollWheel") != 0)
+        else if (Control.Scrolling != 0)
         {
-            ChangeScale(-Input.GetAxis("Mouse ScrollWheel"));
+            ChangeScale(Control.Scrolling);
         }
     }
 
     private void RotateCameraAround()
     {
-        var mouseCorrection = 3f * Global.MouseSens * Time.deltaTime / Time.timeScale;
-        var scrollCorrection = 3000f * Global.ScrollSens * Time.deltaTime / Time.timeScale;
-            
-        transform.RotateAround(target.position, transform.up, Input.GetAxis("Mouse X") * mouseCorrection);
-        transform.RotateAround(target.position, transform.right, -Input.GetAxis("Mouse Y") * mouseCorrection);
-        transform.RotateAround(target.position, transform.forward, Input.GetAxis("Mouse ScrollWheel") * scrollCorrection);
+        var mouseCorrection = 3f * Time.deltaTime / Time.timeScale;
+        var scrollCorrection = 3000f * Time.deltaTime / Time.timeScale;
+        
+        transform.RotateAround(target.position, transform.up, Control.RotateDirection.x * mouseCorrection);
+        transform.RotateAround(target.position, transform.right, Control.RotateDirection.y * mouseCorrection);
+        transform.RotateAround(target.position, transform.forward, Control.Scrolling * scrollCorrection);
     }
     
     private void ChangeScale(float input)
     {
-        var isDistancing = input > 0;
+        var isDistancing = input < 0;
         
         switch (Global.MapScale)
         {

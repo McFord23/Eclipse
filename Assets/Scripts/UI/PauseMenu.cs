@@ -10,7 +10,7 @@ public class PauseMenu : MonoBehaviour
 
     public void MonitoringInput()
     {
-        if (!Input.GetKeyDown(KeyCode.Escape)) return;
+        if (!Control.Pause) return;
         
         if (Global.IsPause) Resume();
         else Pause();

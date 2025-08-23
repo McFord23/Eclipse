@@ -10,29 +10,36 @@ public class EclipseMap : MonoBehaviour
     
     [Space(15)]
     [SerializeField] private Player player;
-    private Vector3 potentialPhotoPlace;
+    [SerializeField] private Transform targetPoint;
 
     private void OnMouseDown()
     {
+        if (Global.IsPause) return;
         if (!eclipse.enabled) return;
         
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
         if (Physics.Raycast(ray.origin, ray.direction, out hit, MAX_DISTANCE, layer))
         {
-            potentialPhotoPlace = hit.point;
+            targetPoint.position = hit.point;
+            targetPoint.LookAt(transform);
 
-            var checkerGO = Instantiate(eclipseCheckerPrefab, potentialPhotoPlace, 
-                eclipseCheckerPrefab.transform.rotation, transform);
+            var checkerGO = Instantiate
+            (
+                eclipseCheckerPrefab, 
+                targetPoint.position, 
+                eclipseCheckerPrefab.transform.rotation, 
+                transform
+            );
 
             var checker = checkerGO.GetComponent<EclipseChecker>();
             checker.eclipseMap = this;
         }
     }
 
-    public void OnCheckInEclipse(float quality)
+    public void OnCheckInEclipse()
     {
-        player.EnablePhotoMode(quality, potentialPhotoPlace);
+        player.EnablePhotoMode(targetPoint);
     }
 }

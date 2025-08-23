@@ -15,15 +15,11 @@ public class EclipseChecker : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        var quality = eclipseMap.eclipse.GetQuality(transform.position);
-        //eclipseMap.eclipse.gameObject.SetActive(false);
-        eclipseMap.OnCheckInEclipse(quality);
-        Delete();
+        eclipseMap.OnCheckInEclipse();
     }
 
     private void Delete()
     {
-        //eclipseMap.eclipse.SetActiveTriggers(false);
         Destroy(gameObject);
     }
 

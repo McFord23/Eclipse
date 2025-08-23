@@ -50,55 +50,29 @@ public class Photographer : MonoBehaviour
 
         if (!viewingPhoto)
         {
-            var correction = 200f * Global.MouseSens * Time.deltaTime;
-            var input = Input.GetAxis("Mouse ScrollWheel") * correction;
+            var input = 200f * Control.Scrolling * Time.deltaTime;
             if (input != 0) SetupCamera(input);
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse0) && Global.Mode is Mode.Photo)
+        if (Control.LeftPress && Global.Mode is Mode.Photo)
         {
             if (viewingPhoto) RemovePhoto();
             else StartCoroutine(CapturePhoto());
         }
     }
 
-    private void FixedUpdate()
-    {
-        if (Global.IsPlayerBlocked || Global.IsPause) return;
-        
-        Quaternion rotation = Quaternion.FromToRotation(-transform.up, earth.position - transform.position);
-        transform.rotation *= rotation;
-    }
-
     private void LateUpdate()
     {
         if (Global.IsPlayerBlocked || Global.IsPause) return;
-
-        var correction = Global.MouseSens * Time.deltaTime;
-
-        var rotateDir = new Vector3
-        {
-            x = Input.GetAxis("Mouse X") * correction,
-            y = -Input.GetAxis("Mouse Y") * correction
-        };
-
-        RotateView(rotateDir);
+        RotateView(Control.RotateDirection * Time.deltaTime);
     }
     
-    private void RotateView(Vector3 viewDir)
+    private void RotateView(Vector2 viewDir)
     {
-        //inputDir = new Vector3(transform.localEulerAngles.y, 0, transform.localEulerAngles.x);
         inputDir.x += viewDir.x;
         inputDir.y += viewDir.y;
         
         transform.localEulerAngles = new Vector3(inputDir.y, inputDir.x, 0);
-        //view.localEulerAngles = new Vector3(inputDir.y, 0, 0);
-
-        /*var newDir = inputDir.y + viewDir.y;
-        if (newDir > -70 && newDir < 80)
-        {
-            inputDir = new Vector3(inputDir.x, newDir, 0);
-        }*/
     }
 
     private void SetupCamera(float input)
@@ -157,11 +131,5 @@ public class Photographer : MonoBehaviour
         viewingPhoto = false;
         photoFrame.SetActive(false);
         hud.SetActive(true);
-    }
-    
-    private void OnGUI()
-    {
-        GUILayout.Label("scroll wheel input: " + Input.GetAxis("Mouse ScrollWheel"));
-        GUILayout.Label("camera ratio: " + cameraRatio);
     }
 }
