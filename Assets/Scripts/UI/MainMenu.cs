@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
@@ -12,17 +11,16 @@ public class MainMenu : MonoBehaviour
 
     private void Start()
     {
-        settingsMenu.SetActive(false);
-        newTripMenu.SetActive(false);
         shopMenu.SetActive(false);
         equipmentMenu.SetActive(false);
-        albumMenu.SetActive(false);    }
-
-    public void SceneTrancision()
-    {
-        //SceneManager.LoadScene("NewTrip");
+        albumMenu.SetActive(false);
     }
 
+    public void Play()
+    {
+        var scene = Scene.Game.ToString();
+        SceneManager.LoadScene(scene);
+    }
 
     public void EnabledNewTripMenu()
     {
